@@ -15,61 +15,27 @@ exit20(){
 }
 
 ##Detect the Operating System
-gcc || apt-get install gcc >> /dev/null
-gcc || yum install gcc >> /dev/null
-gcc --version | grep -i ubuntu
-if [ $? -eq 0 ]; then
-	opsys="Ubuntu"
-fi
-gcc --version | grep -i debian >> /dev/null
-if [ $? -eq 0 ]; then
-	opsys="Debian"
-fi
-
-gcc --version | grep -i RedHat >> /dev/null
-if [ $? -eq 0 ]; then
-	opsys="RedHat"
-fi
-
-gcc --version | grep -i #CentOS >> /dev/null
-if [ $? -eq 0 ]; then
-	opsys="CentOS"
-fi
+opsys="Ubuntu"
 
 ##Updates the operating system, kernel, firefox, and libre office and also installs 'clamtk'
 update(){
 
-	case "$opsys" in
-	"Debian"|"Ubuntu")
-		sudo add-apt-repository -y ppa:libreoffice/ppa
-		wait
-		sudo apt-get update -y
-		wait
-		sudo apt-get upgrade -y
-		wait
-		sudo apt-get dist-upgrade -y
-		wait
-		killall firefox
-		wait
-		sudo apt-get --purge --reinstall install firefox -y
-		wait
-		sudo apt-get install clamtk -y	
-		wait
+	sudo add-apt-repository -y ppa:libreoffice/ppa
+	wait
+	sudo apt-get update -y
+	wait
+	sudo apt-get upgrade -y
+	wait
+	sudo apt-get dist-upgrade -y
+	wait
+	killall firefox
+	wait
+	sudo apt-get --purge --reinstall install firefox -y
+	wait
+	sudo apt-get install clamtk -y	
+	wait
 
-		pause
-	;;
-	"RedHat"|"CentOS")
-		yum update -y
-		wait
-		yum upgrade -y
-		wait
-		yum update firefox -y
-		wait
-		yum install clamtk -y
-		wait
-
-		pause
-	;;
+	pause
 	esac
 }
 
@@ -101,16 +67,13 @@ backup() {
 
 ##Sets Automatic Updates on the machine.
 autoUpdate() {
-echo "$LogTime uss: [$UserName]# Setting auto updates." >> output.log
-	case "$opsys" in
-	"Debian"|"Ubuntu")
-
+	echo "$LogTime uss: [$UserName]# Setting auto updates." >> output.log
 	##Set daily updates
 		sed -i -e 's/APT::Periodic::Update-Package-Lists.*\+/APT::Periodic::Update-Package-Lists "1";/' /etc/apt/apt.conf.d/10periodic
 		sed -i -e 's/APT::Periodic::Download-Upgradeable-Packages.*\+/APT::Periodic::Download-Upgradeable-Packages "0";/' /etc/apt/apt.conf.d/10periodic
-##Sets default broswer
+	##Sets default broswer
 		sed -i 's/x-scheme-handler\/http=.*/x-scheme-handler\/http=firefox.desktop/g' /home/$UserName/.local/share/applications/mimeapps.list
-##Set "install security updates"
+	##Set "install security updates"
 		cat /etc/apt/sources.list | grep "deb http://security.ubuntu.com/ubuntu/ trusty-security universe main multiverse restricted"
 		if [ $? -eq 1 ]
 		then
@@ -124,11 +87,6 @@ echo "$LogTime uss: [$UserName]# Setting auto updates." >> output.log
 		cat /etc/apt/sources.list
 		pause
 	;;
-	"RedHat"|"CentOS")
-
-		yum -y install yum-cron
-	;;
-	esac
 }
 
 ##Finds all prohibited files on the machine and deletes them
@@ -176,32 +134,20 @@ echo "$LogTime uss: [$UserName]# Media files deleted." >> output.log
 ##Configures the firewall
 configureFirewall() {
 echo "$LogTime uss: [$UserName]# Checking for firewall..." >> output.log
-	case "$opsys" in
-	"Ubuntu"|"Debian")
-		dpkg -l | grep ufw >> output.log
-		if [ $? -eq 1 ]
-		then
-			apt-get install ufw >> output.log
-		fi
+	dpkg -l | grep ufw >> output.log
+	if [ $? -eq 1 ]
+	then
+		apt-get install ufw >> output.log
+	fi
 echo "$LogTime uss: [$UserName]# Enabling firewall..." >> output.log
-		sudo ufw enable >>output.log
-		sudo ufw status >> output.log
-		sleep 1
+	sudo ufw enable >>output.log
+	sudo ufw status >> output.log
+	sleep 1
 echo "$LogTime uss: [$UserName]# Firewall has been turned on and configured." >> output.log
-		ufw status
-		pause
-	;;
-	"RedHat"|"CentOS")
-		yum install ufw
-echo "$LogTime uss: [$UserName]# Enabling firewall..." >> output.log
-                sudo ufw enable >>output.log
-                sudo ufw status >> output.log
-                sleep 1
-echo "$LogTime uss: [$UserName]# Firewall has been turned on and configured." >> output.log
-                ufw status
-                pause
-	;;
-	esac
+	ufw status
+	pause
+;;
+esac
 }
 
 ##Edits the /etc/gdm3 /etc/lightdm/lightdm.conf config files.
