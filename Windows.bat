@@ -197,8 +197,7 @@ set /p answer=Have you answered all the forensics questions?[y/n]:
 	goto :menu
 :UAC
 	rem Enable UAC
-	echo Turning on UAC has to be done manually.
-	
+	Powershell.exe -executionpolicy remotesigned -File  UAC.ps1
 	pause
 	goto :menu
 :remDesk
