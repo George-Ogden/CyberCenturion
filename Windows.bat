@@ -8,9 +8,7 @@ if %errorlevel%==0 (
 	pause
     exit
 )
-
 cls
-
 set /p answer=Have you answered all the forensics questions?[y/n]: 
 	if /I {%answer%}=={y} (
 		goto :menu
@@ -55,16 +53,13 @@ set /p answer=Have you answered all the forensics questions?[y/n]:
 		if "%answer%"=="69" exit
 		if "%answer%"=="70" shutdown /r
 	pause
-
 :userProp
 	echo Setting password never expires
 	wmic UserAccount set PasswordExpires=True
 	wmic UserAccount set PasswordChangeable=True
 	wmic UserAccount set PasswordRequired=True
-
 	pause
 	goto :menu
-
 :passwd
 	echo Changing all user passwords
 	
@@ -109,7 +104,6 @@ set /p answer=Have you answered all the forensics questions?[y/n]:
 	if /I "%answer%"=="n" (
 		goto :menu
 	)
-
 :disGueAdm
 	rem Disables the guest account
 	net user Guest | findstr Active | findstr Yes
@@ -151,7 +145,6 @@ set /p answer=Have you answered all the forensics questions?[y/n]:
 	net accounts /lockoutduration:30
 	net accounts /lockoutthreshold:5
 	net accounts /lockoutwindow:30
-
 	pause
 	goto :menu
 	
@@ -165,7 +158,6 @@ set /p answer=Have you answered all the forensics questions?[y/n]:
 	
 :badFiles
 	goto :menu
-
 :services
 	echo Disabling Services
 	sc stop TapiSrv
@@ -204,13 +196,11 @@ set /p answer=Have you answered all the forensics questions?[y/n]:
 	pause
 	goto :menu
 :UAC
-
 	rem Enable UAC
 	echo Turning on UAC has to be done manually.
 	
 	pause
 	goto :menu
-
 :remDesk
 	rem Ask for remote desktop
 	set /p answer=Do you want remote desktop enabled?[y/n]
@@ -230,16 +220,13 @@ set /p answer=Have you answered all the forensics questions?[y/n]:
 	rem Turn on automatic updates
 	echo Turning on automatic updates
 	reg add "HKLM\SOFTWARE\Microsoft\WINDOWS\CurrentVersion\WindowsUpdate\Auto Update" /v AUOptions /t REG_DWORD /d 4 /f
-
 	pause
 	goto :menu
 	
 :secOpt
 	echo Changing security options now.
-
 	rem Restrict CD ROM drive
 	reg ADD "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" /v AllocateCDRoms /t REG_DWORD /d 1 /f
-
 	rem Automatic Admin logon
 	reg ADD "HKLM\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Winlogon" /v AutoAdminLogon /t REG_DWORD /d 0 /f
 	
@@ -340,7 +327,6 @@ set /p answer=Have you answered all the forensics questions?[y/n]:
 	
 	rem Allow to use Machine ID for NTLM
 	reg ADD HKLM\SYSTEM\CurrentControlSet\Control\Lsa /v UseMachineId /t REG_DWORD /d 0 /f
-
 	rem Enables DEP
 	bcdedit.exe /set {current} nx AlwaysOn
 	pause
@@ -353,7 +339,6 @@ set /p answer=Have you answered all the forensics questions?[y/n]:
 	
 	pause
 	goto :menu
-
 :group
 	cls
 	net localgroup
@@ -373,7 +358,6 @@ set /p answer=Have you answered all the forensics questions?[y/n]:
 	if "%answer%"=="back" (
 		goto :group
 	)
-
 	set /p answer=Would you like to go check again?[y/n]
 	if /I "%answer%"=="y" (
 		goto :group
